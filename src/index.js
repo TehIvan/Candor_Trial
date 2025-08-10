@@ -1,7 +1,8 @@
+require("dotenv").config(process.cwd() + "/.env");
+
 const { Client, Collection } = require("discord.js");
 const { loadCommands, loadEvents } = require("./utils/handler");
 const { createTables, insertReminder, getReminders, getPolls, getVotes } = require("./utils/sql");
-const { token } = require(process.cwd() + "/config/config.json");
 
 const client = new Client({
     intents: ["Guilds", "GuildMembers", "GuildMessages"]
@@ -40,7 +41,7 @@ client.votes = new Collection();
     await loadEvents(client);
 
     try {
-        client.login(token);
+        client.login(process.env.TOKEN);
     } catch (err) {
         console.log("Unable to login");
         console.log(err);
