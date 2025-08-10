@@ -51,6 +51,13 @@ module.exports = {
             ]
         });
 
+        interaction.editReply({
+            embeds: [generateEmbed({
+                title: "Posted",
+                description: "Please find your poll at " + msg.url
+            })]
+        })
+
         insertPoll(channel, msg, question, options, date).then(id => {
             client.polls.set(id, {channelId: channel.id, messageId: msg.id, question: question, options: arr, date})
             client.votes.set(id, []);

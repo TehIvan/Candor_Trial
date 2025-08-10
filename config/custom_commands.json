@@ -1,0 +1,13 @@
+[
+    {
+        "name": "help",
+        "description": "Says hello!",
+        "response": {
+            "content": "Help!",
+            "embeds": [{
+                "title": "help!",
+                "color": "15548997"
+            }]
+        }
+    }
+]

@@ -1,8 +1,10 @@
-const { Client } = require("discord.js");
-const { readdir } = require("fs/promises");
+const { Client, SlashCommandBuilder } = require("discord.js");
+const { readdir, readFile } = require("fs/promises");
 
 const commandsPath = process.cwd() + '/src/commands';
 const eventsPath = process.cwd() + '/src/events';
+
+const customCommands = require(process.cwd() + '/config/custom_commands.json');
 
 /**
  * 
@@ -20,10 +22,33 @@ async function loadCommands(client) {
             client.commands.set(commandFile.info.name, commandFile);
             console.log("Loaded command " + commandFile.info.name);
         }
+
+        await loadCustomCommands(client);
     } catch (error) {
         console.log("Error loading commands");
         console.log(error);
     }
+}
+
+async function loadCustomCommands(client) {
+    return new Promise((resolve, reject) => {
+        console.log("Loading custom commands");
+
+        for (let command of customCommands) {
+            client.commands.set(command.name, {
+                info: new SlashCommandBuilder()
+                    .setName(command.name)
+                    .setDescription(command.description)
+                    .toJSON(),
+                run: (client, interaction) => interaction.reply(command.response)
+            })
+        }
+
+        resolve();
+    }).catch(err => {
+        throw err;
+    })
+
 }
 
 /**
