@@ -24,7 +24,7 @@ module.exports = {
                 })
                 .catch(() => {
                     console.log("Failed to register command: " + command.info.name);
-                });
+                }); 
             }
         } catch (err) {
             console.log("Could not find guild.");
