@@ -1,6 +1,6 @@
 const { Client, Collection } = require("discord.js");
 const { deleteReminder } = require("../utils/sql");
-const { generateEmbed } = require("../utils/util");
+const { generateEmbed, reminderTask, pollTask } = require("../utils/util");
 const { guildId } = require(process.cwd() + "/config/config.json");
 
 module.exports = {
@@ -33,29 +33,11 @@ module.exports = {
             process.exit();
         }
 
+        pollTask(client);
+
         console.log("\nStarting Tasks\n")
         setInterval(() => {
-            let currentDate = new Date()
-            client.reminders.filter(
-                r => currentDate >= r.date
-            ).forEach((reminder, id) => {
-                client.users.fetch(reminder.userId).then(user => {
-                    user.send({
-                        embeds: [
-                            generateEmbed({
-                                title: "Reminder",
-                                description: reminder.message
-                            })
-                        ]
-                    })
-
-                    client.reminders.delete(id);
-                    deleteReminder(id);
-                }).catch(err => {
-                    console.log("Failed to fetch user for reminder ID " + id)
-                    console.log(err);
-                })
-            })
+            reminderTask(client);
         }, 60 * 1000);
     }
 }
