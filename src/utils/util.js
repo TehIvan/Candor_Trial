@@ -46,7 +46,7 @@ function pollTask(client) {
     let currentDate = new Date();
 
     client.polls.filter(
-        r => true
+        r => currentDate >= r.date
     ).forEach((poll, id) => {
         client.channels.fetch(poll.channelId).then(channel => {
             channel.messages.fetch(poll.messageId).then(async msg => {
