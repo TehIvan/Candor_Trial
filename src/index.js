@@ -4,8 +4,7 @@ const { createTables, insertReminder, getReminders } = require("./utils/sql");
 const { token } = require(process.cwd() + "/config/config.json");
 
 const client = new Client({
-    intents: ["Guilds", "GuildMembers", "GuildMessages"],
-    partials: [Partials.Channel, Partials.Message, Partials.GuildMember]
+    intents: ["Guilds", "GuildMembers", "GuildMessages"]
 });
 
 client.commands = new Collection();

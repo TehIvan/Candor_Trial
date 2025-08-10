@@ -23,9 +23,9 @@ function insertReminder(userId, message, date) {
     })
 }
 
-function deleteReminder(userId) {
+function deleteReminder(id) {
     return new Promise((resolve, reject) => {
-        connection.query("DELETE FROM reminders WHERE user_id = ?", userId)
+        connection.query("DELETE FROM reminders WHERE id = ?", id)
         .then(() => {
             resolve();
         })

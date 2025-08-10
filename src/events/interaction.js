@@ -1,4 +1,6 @@
 const { Client } = require("discord.js");
+const { deleteReminder } = require("../utils/sql");
+const { generateEmbed } = require("../utils/util");
 
 module.exports = {
     name: "interactionCreate",
@@ -9,11 +11,29 @@ module.exports = {
      */
     run: (client, interaction) => {
 
-        if (!interaction.isCommand()) return;
+        if (interaction.isCommand()) {
 
-        let name = interaction.commandName;
-        let command = client.commands.get(name);
-        
-        if (command != null) command.run(client, interaction);
+            let name = interaction.commandName;
+            let command = client.commands.get(name);
+
+            if (command != null) command.run(client, interaction);
+        }
+
+        if (interaction.isStringSelectMenu()) {
+            
+            switch (interaction.customId) {
+                case "deleteReminder":
+                    client.reminders.delete(parseInt(interaction.values[0]));
+                    deleteReminder(parseInt(interaction.values[0]));
+
+                    interaction.reply({
+                        flags: ["Ephemeral"],
+                        embeds: [generateEmbed({
+                            title: "Reminder deleted"
+                        })]
+                    })
+                    break;
+            }
+        } 
     }
 }

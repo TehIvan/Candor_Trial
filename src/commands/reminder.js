@@ -99,8 +99,8 @@ function listRemindersCommand(client, interaction) {
         embeds: [
             generateEmbed({
                 title: "Your Reminders",
-                description: "You have a total of " + reminders.size + " reminders set\n\n" + reminders.map(r => {
-                    return r.message + time(r.date, TimestampStyles.RelativeTime)
+                description: "You have a total of " + reminders.size + " reminders set\n\n" + reminders.map((r, i) => {
+                    return `**${i}**. ${r.message} ${time(r.date, TimestampStyles.RelativeTime)}`
                 }).join("\n")
             })
         ],
@@ -108,10 +108,11 @@ function listRemindersCommand(client, interaction) {
             new ActionRowBuilder().addComponents(
                 new StringSelectMenuBuilder()
                     .setCustomId("deleteReminder")
-                    .addOptions(reminders.map(r => {
+                    .setPlaceholder("Delete Reminder")
+                    .addOptions(reminders.map((r, i) => {
                         return {
-                            label: r.message,
-                            value: r.message
+                            label: `#${i}. ${r.message}`,
+                            value: `${i}`
                         }
                     }))
             )
