@@ -1,6 +1,7 @@
-const { ChatInputCommandInteraction, time, TimestampStyles, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
+const { ChatInputCommandInteraction, time, TimestampStyles, ActionRowBuilder, StringSelectMenuBuilder, Collection } = require("discord.js");
 const { SlashCommandBuilder, Client } = require("discord.js");
 const { generateEmbed, parseTimeString } = require("../utils/util");
+const { insertReminder } = require("../utils/sql");
 
 module.exports = {
     info: new SlashCommandBuilder()
@@ -59,15 +60,6 @@ function setReminderCommand(client, interaction) {
         return;
     }
 
-    if (client.reminders.has(interaction.user.id)) {
-        let arr = client.reminders.get(interaction.user.id);
-        arr.push({
-            message,
-            date
-        });
-        client.reminders.set(interaction.user.id, arr);
-    } else client.reminders.set(interaction.user.id, [{ message, date }]);
-
     interaction.editReply({
         embeds: [
             generateEmbed({
@@ -77,12 +69,24 @@ function setReminderCommand(client, interaction) {
             })
         ]
     })
+
+    insertReminder(interaction.user.id, message, date).then(id => {
+        let reminderObj = {
+            userId: interaction.user.id, 
+            message, 
+            date
+        }
+
+        client.reminders.set(id, reminderObj);
+    }).catch(err => {
+        throw err;
+    });
 }
 
 function listRemindersCommand(client, interaction) {
-    let reminders = client.reminders.get(interaction.user.id);
+    let reminders = client.reminders.filter(r => r.userId == interaction.user.id)
 
-    if (reminders == null || reminders.length == 0) {
+    if (reminders == null || reminders.size == 0) {
         return interaction.editReply({
             embeds: [generateEmbed({
                 title: "Error",
@@ -95,7 +99,7 @@ function listRemindersCommand(client, interaction) {
         embeds: [
             generateEmbed({
                 title: "Your Reminders",
-                description: "You have a total of " + reminders.length + " reminders set\n\n" + reminders.map(r => {
+                description: "You have a total of " + reminders.size + " reminders set\n\n" + reminders.map(r => {
                     return r.message + time(r.date, TimestampStyles.RelativeTime)
                 }).join("\n")
             })

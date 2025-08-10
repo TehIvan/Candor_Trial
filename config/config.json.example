@@ -1,12 +1,12 @@
 {
-    "token": "MTQwNDEwMTAwMTk5MjA4MTUxOQ.G9Sb22.JahuhioYBlt06J0OoMVYz0sdHup_27bG73z9ZA",
-    "guildId": "934365008022896660",
+    "token": "",
+    "guildId": "",
     "database_details": {
         "host": "localhost",
-        "user": "root",
+        "user": "",
         "port": 3306,
         "database": "discord_bots",
-        "password": "marojo07"
+        "password": ""
     },
     "embedSettings": {
         "color": "15548997",
