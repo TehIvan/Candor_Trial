@@ -33,11 +33,10 @@ module.exports = {
             process.exit();
         }
 
-        pollTask(client);
-
         console.log("\nStarting Tasks\n")
         setInterval(() => {
             reminderTask(client);
+            pollTask(client);
         }, 60 * 1000);
     }
 }

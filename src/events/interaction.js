@@ -1,6 +1,8 @@
-const { Client, TimestampStyles, time } = require("discord.js");
+const { Client, TimestampStyles, time, SlashCommandBuilder } = require("discord.js");
 const { deleteReminder, insertVote } = require("../utils/sql");
 const { generateEmbed } = require("../utils/util");
+const customCommands = require(process.cwd() + "/config/custom_commands.json");
+const { writeFile } = require('fs/promises');
 
 module.exports = {
     name: "interactionCreate",
@@ -9,7 +11,7 @@ module.exports = {
      * @param {Client} client 
      * @param {import("discord.js").Interaction} interaction 
      */
-    run: (client, interaction) => {
+    run: async (client, interaction) => {
 
         if (interaction.isCommand()) {
 

@@ -1,13 +1,15 @@
 [
-    {
-        "name": "help",
-        "description": "Says hello!",
-        "response": {
-            "content": "Help!",
-            "embeds": [{
-                "title": "help!",
-                "color": "15548997"
-            }]
+  {
+    "name": "help",
+    "description": "Says hello!",
+    "response": {
+      "content": "Help!",
+      "embeds": [
+        {
+          "title": "help!",
+          "color": "15548997"
         }
+      ]
     }
+  }
 ]

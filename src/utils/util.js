@@ -5,7 +5,7 @@ const { Duration } = require('@sapphire/duration');
 const { deletePoll, deleteVote } = require("./sql");
 
 function generateEmbed(options) {
-    return new EmbedBuilder({ ...embedSettings, ...options })
+    return new EmbedBuilder(options).setFooter(embedSettings.footer).setColor(resolveColor(embedSettings.color));
 }
 
 function parseTimeString(input) {

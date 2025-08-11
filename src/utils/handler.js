@@ -36,6 +36,7 @@ async function loadCustomCommands(client) {
 
         for (let command of customCommands) {
             client.commands.set(command.name, {
+                isCustom: true,
                 info: new SlashCommandBuilder()
                     .setName(command.name)
                     .setDescription(command.description)
