@@ -75,6 +75,7 @@ async function addEmbed(interaction) {
     }
 
     if (embed["color"] != undefined) embed["color"] = resolveColor(embed["color"]);
+    if (embed["footer"] != undefined) embed["footer"] = {text: embed["footer"]}
 
     interaction.message.edit({
         embeds: interaction.message.embeds.concat(new EmbedBuilder(embed))
