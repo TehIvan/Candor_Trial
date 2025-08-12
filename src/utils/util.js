@@ -3,6 +3,7 @@ const { embedSettings } = require(process.cwd() + "/config/config.json");
 const chrono = require('chrono-node');
 const { Duration } = require('@sapphire/duration');
 const { deletePoll, deleteVote } = require("./sql");
+const { resolveColor } = require("discord.js");
 
 function generateEmbed(options) {
     return new EmbedBuilder(options).setFooter(embedSettings.footer).setColor(resolveColor(embedSettings.color));

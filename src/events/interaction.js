@@ -1,4 +1,4 @@
-const { Client, TimestampStyles, time, SlashCommandBuilder } = require("discord.js");
+const { Client, TimestampStyles, time, SlashCommandBuilder, ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, ComponentType } = require("discord.js");
 const { deleteReminder, insertVote } = require("../utils/sql");
 const { generateEmbed } = require("../utils/util");
 const customCommands = require(process.cwd() + "/config/custom_commands.json");
@@ -19,6 +19,84 @@ module.exports = {
             let command = client.commands.get(name);
 
             if (command != null) command.run(client, interaction);
+        }
+
+        if (interaction.isButton()) {
+            switch (interaction.customId) {
+                case "setTextContent":
+                    await interaction.showModal(new ModalBuilder().setTitle("Enter your message content").addComponents(
+                        new ActionRowBuilder().addComponents(
+                            new TextInputBuilder().setCustomId("content").setStyle(TextInputStyle.Paragraph).setLabel("Content").setRequired(true)
+                        )
+                    ).setCustomId("content"));
+
+                    let res = await interaction.awaitModalSubmit({
+                        time: 60 * 1000 * 30
+                    });
+
+                    res.deferUpdate();
+
+                    interaction.message.edit(res.fields.getTextInputValue("content"));
+                    break;
+                case "finishCommand":
+                    let obj = {};
+
+                    if (interaction.message.content != null) obj["content"] = interaction.message.content;
+                    if (interaction.message.embeds.length > 0) obj["embeds"] = interaction.message.embeds;
+
+                    if (Object.keys(obj).length == 0) {
+                        return interaction.reply({
+                            flags: ["Ephemeral"],
+                            embeds: [generateEmbed({
+                                title: "Please enter details"
+                            })]
+                        })
+                    }
+
+                    await interaction.showModal(new ModalBuilder().setTitle("Enter your command details").addComponents(
+                        new ActionRowBuilder().addComponents(
+                            new TextInputBuilder().setCustomId("name").setStyle(TextInputStyle.Short).setLabel("Command Name").setRequired(true)
+                        ),
+                        new ActionRowBuilder().addComponents(
+                            new TextInputBuilder().setCustomId("description").setStyle(TextInputStyle.Short).setLabel("Command Description").setRequired(true)
+                        )
+                    ).setCustomId("command"));
+
+                    let r = await interaction.awaitModalSubmit({
+                        time: 60 * 1000 * 30
+                    });
+
+                    let name = r.fields.getTextInputValue("name");
+                    let description = r.fields.getTextInputValue("description");
+
+                    let command = {
+                        name, description, response: obj
+                    }
+
+                    interaction.message.delete();
+                    r.reply({
+                        flags: ["Ephemeral"],
+                        embeds: [generateEmbed({
+                            title: "Command created"
+                        })]
+                    });
+
+
+                    client.commands.set(command.name, {
+                        isCustom: true,
+                        info: new SlashCommandBuilder()
+                            .setName(command.name)
+                            .setDescription(command.description)
+                            .toJSON(),
+                        run: (client, interaction) => interaction.reply(command.response)
+                    })
+
+                    await interaction.guild.commands.create(new SlashCommandBuilder()
+                            .setName(command.name)
+                            .setDescription(command.description)
+                            .toJSON());
+                    break;
+            }
         }
 
         if (interaction.isStringSelectMenu()) {
