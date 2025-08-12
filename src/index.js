@@ -1,5 +1,7 @@
 require("dotenv").config(process.cwd() + "/.env");
 
+process.on("uncaughtException", (err) => console.log(err));
+
 const { Client, Collection } = require("discord.js");
 const { loadCommands, loadEvents } = require("./utils/handler");
 const { createTables, insertReminder, getReminders, getPolls, getVotes } = require("./utils/sql");
@@ -41,6 +43,7 @@ client.votes = new Collection();
     await loadEvents(client);
 
     try {
+
         client.login(process.env.TOKEN);
     } catch (err) {
         console.log("Unable to login");

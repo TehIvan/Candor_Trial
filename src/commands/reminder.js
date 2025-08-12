@@ -1,7 +1,6 @@
-const { ChatInputCommandInteraction, time, TimestampStyles, ActionRowBuilder, StringSelectMenuBuilder, Collection } = require("discord.js");
+const { ChatInputCommandInteraction } = require("discord.js");
 const { SlashCommandBuilder, Client } = require("discord.js");
-const { generateEmbed, parseTimeString } = require("../utils/util");
-const { insertReminder } = require("../utils/sql");
+const { setReminder, listReminders } = require("../utils/reminder");
 
 module.exports = {
     info: new SlashCommandBuilder()
@@ -37,85 +36,11 @@ module.exports = {
 
         switch (subcommand) {
             case "set":
-                setReminderCommand(client, interaction);
+                setReminder(client, interaction);
                 break;
             default:
-                listRemindersCommand(client, interaction);
+                listReminders(client, interaction);
                 break;
         }
     }
-}
-
-function setReminderCommand(client, interaction) {
-    let message = interaction.options.getString("message", true);
-    let duration = interaction.options.getString("duration", true);
-
-    let date = parseTimeString(duration);
-
-    if (date == null) {
-        interaction.editReply({
-            title: "Error",
-            description: "Invalid date string"
-        })
-        return;
-    }
-
-    interaction.editReply({
-        embeds: [
-            generateEmbed({
-                title: "Reminder Set",
-                description: "Your reminder is set to ring " + time(date, TimestampStyles.RelativeTime),
-                fields: [{ name: "Content", value: message }]
-            })
-        ]
-    })
-
-    insertReminder(interaction.user.id, message, date).then(id => {
-        let reminderObj = {
-            userId: interaction.user.id, 
-            message, 
-            date
-        }
-
-        client.reminders.set(id, reminderObj);
-    }).catch(err => {
-        throw err;
-    });
-}
-
-function listRemindersCommand(client, interaction) {
-    let reminders = client.reminders.filter(r => r.userId == interaction.user.id)
-
-    if (reminders == null || reminders.size == 0) {
-        return interaction.editReply({
-            embeds: [generateEmbed({
-                title: "Error",
-                description: "You do not have any reminders set."
-            })]
-        });
-    }
-
-    interaction.editReply({
-        embeds: [
-            generateEmbed({
-                title: "Your Reminders",
-                description: "You have a total of " + reminders.size + " reminders set\n\n" + reminders.map((r, i) => {
-                    return `**${i}**. ${r.message} ${time(r.date, TimestampStyles.RelativeTime)}`
-                }).join("\n")
-            })
-        ],
-        components: [
-            new ActionRowBuilder().addComponents(
-                new StringSelectMenuBuilder()
-                    .setCustomId("deleteReminder")
-                    .setPlaceholder("Delete Reminder")
-                    .addOptions(reminders.map((r, i) => {
-                        return {
-                            label: `#${i}. ${r.message}`,
-                            value: `${i}`
-                        }
-                    }))
-            )
-        ]
-    });
 }

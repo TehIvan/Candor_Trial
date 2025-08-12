@@ -1,6 +1,6 @@
-const { Client, Collection } = require("discord.js");
-const { deleteReminder } = require("../utils/sql");
-const { generateEmbed, reminderTask, pollTask } = require("../utils/util");
+const { Client } = require("discord.js");
+const { pollTask } = require("../utils/poll");
+const { reminderTask } = require("../utils/reminder");
 const { guildId } = require(process.cwd() + "/config/config.json");
 
 module.exports = {

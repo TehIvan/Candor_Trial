@@ -2,6 +2,7 @@ const { SlashCommandBuilder, ButtonStyle } = require("discord.js");
 const { generateEmbed } = require("../utils/util");
 const { ActionRowBuilder } = require("@discordjs/builders");
 const { ButtonBuilder } = require("@discordjs/builders");
+const { createCustomCommand, listCustomCommands } = require("../utils/customCommand");
 
 module.exports = {
     info: new SlashCommandBuilder()
@@ -14,26 +15,13 @@ module.exports = {
     run: (client, interaction) => {
         const subcommand = interaction.options.getSubcommand(true);
 
-        switch(subcommand) {
+        switch (subcommand) {
             case "create":
-                interaction.reply({
-                    embeds: [],
-                    components: [new ActionRowBuilder().addComponents(
-                        new ButtonBuilder()
-                            .setLabel("Set Text Content")
-                            .setCustomId("setTextContent")
-                            .setStyle(ButtonStyle.Primary),
-                        new ButtonBuilder()
-                            .setLabel("Add Embed")
-                            .setCustomId("addEmbed")
-                            .setStyle(ButtonStyle.Secondary)
-                    ), new ActionRowBuilder().addComponents(
-                        new ButtonBuilder()
-                            .setLabel("Finish")
-                            .setCustomId('finishCommand')
-                            .setStyle(ButtonStyle.Danger)
-                    )]
-                })
+                createCustomCommand(interaction)
+                break;
+            default:
+                listCustomCommands(interaction);
+                break;
         }
     }
 }
