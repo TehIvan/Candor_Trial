@@ -1,5 +1,4 @@
 const { Client } = require("discord.js");
-const { generateEmbed } = require("../utils/util");
 const { removeReminder } = require("../utils/reminder");
 const { handleVote } = require("../utils/poll");
 const { setTextContent, finishCreation, addEmbed, deleteCustomCommand } = require("../utils/customCommand");

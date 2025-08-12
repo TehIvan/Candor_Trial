@@ -1,5 +1,5 @@
 const { Client, SlashCommandBuilder } = require("discord.js");
-const { readdir, readFile } = require("fs/promises");
+const { readdir } = require("fs/promises");
 
 const commandsPath = process.cwd() + '/src/commands';
 const eventsPath = process.cwd() + '/src/events';
