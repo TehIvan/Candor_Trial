@@ -7,3 +7,5 @@ Implement a system to handle custom commands. Users should be able to add, list,
 
 - Poll Creation
 Allow users to create polls with multiple options. Users should be able to vote on these options, and the bot should display a tally of voted for each option.
+
+https://www.youtube.com/watch?v=S68LG0o6kNE
